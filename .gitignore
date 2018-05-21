@@ -5,6 +5,5 @@
 ### Django / Python ###
 *.pyc
 *.pyo
-__pycache__/
-*.py[cod]
+__pycache__
 db.sqlite3
