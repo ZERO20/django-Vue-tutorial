@@ -18,7 +18,7 @@
             z-index: 999;
             height: 2em;
             width: 2em;
-            overflow: visible;/*show*/
+            overflow: visible;
             margin: auto;
             top: 0;
             left: 0;
@@ -66,6 +66,7 @@
         }
 
         /* Animation */
+
         @-webkit-keyframes spinner {
             0% {
                 -webkit-transform: rotate(0deg);
@@ -143,6 +144,11 @@
             <h1>List of Articles (${articles.length})
                 <button class="btn btn-success" data-toggle="modal" data-target="#addArticleModal">ADD ARTICLE</button>
             </h1>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <div class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="text" placeholder="Search" v-model="search_term" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" v-on:click.prevent="getArticles()">Search</button>
+            </div>
             <table class="table">
                 <thead>
                 <tr>
@@ -257,7 +263,8 @@
             newArticle: {
                 'article_heading': null,
                 'article_body': null
-            }
+            },
+            search_term: ''
         },
         mounted: function () {
             console.log('Montado');
@@ -265,8 +272,12 @@
         },
         methods: {
             getArticles: function () {
+                let api_url = '/api/article';
+                if(this.search_term !== '' || this.search_term !== null){
+                    api_url = api_url + `?search=${this.search_term}`
+                }
                 this.loading = true;
-                this.$http.get('/api/article/')
+                this.$http.get(api_url)
                     .then((response) => {
                         this.articles = response.data;
                         this.loading = false;
@@ -296,6 +307,7 @@
                 this.$http.post('/api/article/', this.newArticle)
                     .then((response) => {
                         this.loading = false;
+                        this.newArticle = {};
                         this.getArticles();
                     })
                     .catch((err) => {
